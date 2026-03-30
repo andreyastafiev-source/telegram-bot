@@ -3,7 +3,7 @@ import requests
 import json
 import os
 
-TOKEN = os.environ.get("TOKEN")
+TOKEN = os.environ.get("8534372397:AAFVT0iyND6WpLcsOvFJynA50e9GWieaaVI")
 URL = f"https://api.telegram.org/bot{TOKEN}/"
 
 app = Flask(__name__)
@@ -47,6 +47,7 @@ def webhook():
         message = data["message"]
         chat_id = message["chat"]["id"]
 
+        # ===== WebApp =====
         if "web_app_data" in message:
             raw = message["web_app_data"]["data"]
 
@@ -55,20 +56,23 @@ def webhook():
             except:
                 parsed = {"raw": raw}
 
+            print("WEBAPP:", parsed)
+
             if parsed.get("type") == "diagnostic":
-                send_text(chat_id, f"🧠 Результат: {parsed.get('score')} баллов")
+                send_text(chat_id, f"🧠 Результат диагностики: {parsed.get('score')} баллов")
 
             elif parsed.get("type") == "audio":
-                send_text(chat_id, "🎧 Хочет консультацию")
+                send_text(chat_id, "🎧 Пользователь хочет консультацию после практики")
 
             elif parsed.get("type") == "fast":
-                send_text(chat_id, f"⚡ Разбор:\n{parsed.get('data')}")
+                send_text(chat_id, f"⚡ Разбор ситуации:\n{parsed.get('data')}")
 
             elif parsed.get("type") == "supervision":
                 send_text(chat_id, f"👨‍⚕️ Супервизия:\n{parsed.get('data')}")
 
             return "ok"
 
+        # ===== обычное сообщение =====
         send_buttons(chat_id)
 
     return "ok"
